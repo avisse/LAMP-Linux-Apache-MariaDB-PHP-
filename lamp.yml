@@ -1,0 +1,37 @@
+- name: Déploiement d’un serveur LAMP
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Mise à jour de l’index des paquets
+      apt: update_cache=yes
+
+    - name: Installation des paquets LAMP
+      apt:
+        name:
+          - apache2
+          - mariadb-server
+          - php
+          - php-mysql
+          - libapache2-mod-php
+          - php-xml
+          - php-mbstring
+          - unzip
+          - wget
+        state: present
+
+    - name: Activation et démarrage d’Apache
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: Activation et démarrage de MariaDB
+      service:
+        name: mariadb
+        state: started
+        enabled: yes
+
+    - name: Création d’un fichier info.php pour tester PHP
+      copy:
+        dest: /var/www/html/info.php
+        content: "<?php phpinfo(); ?>"
